@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
+class ProductController extends Controller
+{
+    public function index(): JsonResponse
+    {
+        //$products = Product::latest()->paginate(10);
+$products = Product::all();
+        return response()->json([
+            'status'  => true,
+            'data'    => $products,
+        ]);
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image'       => 'nullable|string',
+            'price'       => 'required|numeric|min:0',
+        ]);
+          $file= $request->file('image');
+        //  $file->getClientOriginalName();
+          $path=$file->store($namefile,'public');
+
+        $product = Product::create($validated);
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Product created successfully',
+            'data'    => $product,
+        ], 201);
+    }
+
+    public function show($id): JsonResponse
+    {
+      $product=Product::findorfail($id);
+        return response()->json([
+            'status' => true,
+            'data'   => $product,
+        ]);
+    }
+
+    public function update(Request $request, Product $product): JsonResponse
+    {
+        $validated = $request->validate([
+            'name'        => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'image'       => 'nullable|string',
+            'price'       => 'sometimes|required|numeric|min:0',
+        ]);
+
+        $product->update($validated);
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Product updated successfully',
+            'data'    => $product,
+        ]);
+    }
+
+    public function destroy(Product $product): JsonResponse
+    {
+        $product->delete();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Product deleted successfully',
+        ]);
+    }
+}
