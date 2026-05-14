@@ -12,7 +12,7 @@ class ProductController extends Controller
     public function index(): JsonResponse
     {
         //$products = Product::latest()->paginate(10);
-$products = Product::all();
+     $products = Product::all();
         return response()->json([
             'status'  => true,
             'data'    => $products,
@@ -25,14 +25,25 @@ $products = Product::all();
         $validated = $request->validate([
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image'       => 'nullable|string',
+            'image'       =>  'nullable|image|mimes:jpg,jpeg,png,webp',
             'price'       => 'required|numeric|min:0',
         ]);
-          $file= $request->file('image');
+          if ($request->hasfile('image'))
+        {
+            $file= $request->file('image');
         //  $file->getClientOriginalName();
-          $path=$file->store($namefile,'public');
+          $path=$file->store('product','public');
+        }
 
-        $product = Product::create($validated);
+        $product = Product::create(
+          [
+              'name'        => $request->name,
+            'description' => $request->description,
+            'price'       => $request->price,
+            'image'       => $path
+        
+          ]
+        );
 
         return response()->json([
             'status'  => true,
