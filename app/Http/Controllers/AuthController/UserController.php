@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\loginRequest;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ProfileUserRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\VerifyEmailRequest;
@@ -36,8 +36,23 @@ class UserController extends Controller
             'user'=>$user,
         ], 201);
     }
-  public function login(loginRequest $request)
-{
+  public function login(Request $request)
+{   $validator = Validator::make($request->all(), [
+            'email'    => ['required', 'string', 'email'],
+            'password' => ['required', 'string', 'min:8'],
+        ], [
+            'email.required'    => 'البريد الإلكتروني مطلوب.',
+            'email.email'       => 'صيغة البريد الإلكتروني غير صحيحة.',
+            'password.required' => 'كلمة المرور مطلوبة.',
+            'password.min'      => 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
   
 
     if (!$token = auth()->guard('api')->attempt([
