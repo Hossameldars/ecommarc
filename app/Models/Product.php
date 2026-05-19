@@ -9,12 +9,12 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'image',
-        'price',
-    ];
+protected $fillable = ['name', 'catagory_id', 'description', 'image', 'price'];
+
+public function category()
+{
+    return $this->belongsTo(Category::class, 'catagory_id'); 
+}
 
     protected $casts = [
         'price' => 'decimal:2',

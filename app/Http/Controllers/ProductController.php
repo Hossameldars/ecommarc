@@ -12,7 +12,7 @@ class ProductController extends Controller
     public function index(): JsonResponse
     {
         //$products = Product::latest()->paginate(10);
-     $products = Product::all();
+$products = Product::with('category:id,name')->get();
         return response()->json([
             'status'  => true,
             'data'    => $products,
@@ -22,34 +22,32 @@ class ProductController extends Controller
     public function store(Request $request): JsonResponse
     {
 
-        $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image'       =>  'nullable|image|mimes:jpg,jpeg,png,webp',
-            'price'       => 'required|numeric|min:0',
-        ]);
-          if ($request->hasfile('image'))
-        {
-            $file= $request->file('image');
-        //  $file->getClientOriginalName();
-          $path=$file->store('product','public');
-        }
 
-        $product = Product::create(
-          [
-              'name'        => $request->name,
-            'description' => $request->description,
-            'price'       => $request->price,
-            'image'       => $path
-        
-          ]
-        );
+    $request->validate([
+        'name'        => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp',
+        'price'       => 'required|numeric|min:0',
+    ]);
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Product created successfully',
-            'data'    => $product,
-        ], 201);
+    $path = null; 
+
+    if ($request->hasFile('image')) { 
+        $path = $request->file('image')->store('products', 'public');
+    }
+
+    $product = Product::create([
+        'name'        => $request->name,
+        'description' => $request->description,
+        'price'       => $request->price,
+        'image'       => $path,
+    ]);
+
+    return response()->json([
+        'status'  => true,
+        'message' => 'Product created successfully',
+        'data'    => $product,
+    ], 201);
     }
 
     public function show($id): JsonResponse
@@ -81,7 +79,7 @@ class ProductController extends Controller
 
     public function destroy(Product $product): JsonResponse
     {
-        $product->delete();
+      //  $product->delete();
 
         return response()->json([
             'status'  => true,
