@@ -20,16 +20,16 @@ class UserController extends Controller
     public function register(RegisterRequest $request)
     {
  
-    $otp   = generateOtp(); 
+  //  $otp   = generateOtp(); 
  $user = User::create([
-            'name'      => $request->first_name,
+            'name'      => $request->name,
             'email'          => $request->email,
             'password'       => Hash::make($request->password),
-            'otp'            => $otp,
-            'otp_expires_at' => now()->addMinutes(10),
+            // 'otp'            => $otp,
+            // 'otp_expires_at' => now()->addMinutes(10),
         ]);
       
-    Mail::to($user->email)->send(new EmailVerified($otp));
+    //Mail::to($user->email)->send(new EmailVerified($otp));
 
       return response()->json([
             'message' => 'User successfully registered',
