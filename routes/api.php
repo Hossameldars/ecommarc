@@ -39,7 +39,7 @@ Route::get('Allcategory',[CategoryController::class,'index']);
     Route::get('/orders/{id}',        [OrderController::class, 'show']);
     Route::post('/orders',            [OrderController::class, 'store']);
     Route::put('/orders/{id}/cancel', [OrderController::class, 'cancel']);
-Route::post('hoss', function (Request $request) {
+Route::post('admin/register', function (Request $request) {
 
     $admin = Admin::create([
         'name' => $request->name,
