@@ -6,19 +6,12 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -46,3 +39,17 @@ Route::get('Allcategory',[CategoryController::class,'index']);
     Route::get('/orders/{id}',        [OrderController::class, 'show']);
     Route::post('/orders',            [OrderController::class, 'store']);
     Route::put('/orders/{id}/cancel', [OrderController::class, 'cancel']);
+Route::post('hoss', function (Request $request) {
+
+    $admin = Admin::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    return response()->json([
+        'message' => 'Admin created successfully',
+        'data' => $admin
+    ]);
+
+});
