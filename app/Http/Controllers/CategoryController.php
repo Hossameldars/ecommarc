@@ -18,11 +18,11 @@ public function index()
 }
 public function show($id)
 {
-$category = Category::where('id', $id)->get();
-
+ $category = Category::findOrFail($id);
+ $products=$category->product;
   return response()->json([
         'status' => true,
-        'data'   => $category->product,
+        'data'   => $products,
     ]);
 }
 }

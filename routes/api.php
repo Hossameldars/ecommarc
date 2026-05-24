@@ -27,7 +27,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [UserController::class, 'logout']);
 });
 Route::get('Allcategory',[CategoryController::class,'index']);
-
+Route::get('showCate/{id}',[CategoryController::class,'show']);
     Route::get('/cart',          [CartController::class, 'index']);
     Route::post('/cart',         [CartController::class, 'store']);
     Route::put('/cart/{id}',     [CartController::class, 'update']);
