@@ -16,6 +16,8 @@ public function category()
     return $this->belongsTo(Category::class, 'catagory_id'); 
 }
 
+
+
     protected $casts = [
         'price' => 'decimal:2',
     ];
