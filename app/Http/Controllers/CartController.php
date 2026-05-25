@@ -59,26 +59,20 @@ class CartController extends Controller
         $request->validate([
             'quantity' => 'required|integer|min:1',
         ]);
-
         $cartItem = Cart::where('id', $id)
             ->where('user_id', auth()->id())
             ->first();
-
-    
-
         $cartItem->update(['quantity' => $request->quantity]);
-
         return response()->json([
             'status'  => true,
             'message' => 'تم تعديل الكمية',
             'data'    => $cartItem,
         ]);
-    }
-
-    
-    public function destroy($id)
+    }  
+      public function destroy($id)
     {
-        $cartItem = Cart::where('id', $id)
+        $cartItem = Cart::
+          where('product_id', $id)
             ->where('user_id', auth()->id())
             ->first();
 
@@ -89,9 +83,7 @@ class CartController extends Controller
             'message' => 'تم حذف المنتج من السلة',
         ]);
     }
-
-
-    public function clear()
+        public function clear()
     {
         Cart::where('user_id', auth()->id())->delete();
 
